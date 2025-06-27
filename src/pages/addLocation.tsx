@@ -14,6 +14,11 @@ import "leaflet/dist/leaflet.css";
 import { useLocationStore } from "../store/locationStore";
 import { v4 as uuidv4 } from "uuid";
 import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
+
+const LocationMap = dynamic(() => import("../components/locationMap"), {
+  ssr: false,
+});
 
 function LocationMarker({ position, setPosition }: any) {
   useMapEvents({
@@ -60,17 +65,11 @@ export default function AddLocation() {
       </Heading>
       <Flex gap={8} direction={{ base: "column", md: "row" }}>
         <Box flex={1} h="400px">
-          <MapContainer
-            center={[39.92, 32.85]}
-            zoom={6}
-            style={{ height: "100%", width: "100%" }}
-          >
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            {locations.map((loc) => (
-              <Marker key={loc.id} position={[loc.latitude, loc.longitude]} />
-            ))}
-            <LocationMarker position={position} setPosition={setPosition} />
-          </MapContainer>
+          <LocationMap
+            position={position}
+            setPosition={setPosition}
+            locations={locations}
+          />
         </Box>
         <Box flex={1} as="form" onSubmit={handleSubmit}>
           <FormControl mb={4} isRequired>
