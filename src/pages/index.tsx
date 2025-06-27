@@ -13,15 +13,21 @@ import {
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import Link from "next/link";
 import { useLocationStore } from "../store/locationStore";
+import { useEffect } from "react";
 
 export default function Home() {
   const locations = useLocationStore((state) => state.locations);
+  const rehydrate = useLocationStore((state) => state.rehydrate);
+
+  useEffect(() => {
+    rehydrate();
+  }, [rehydrate]);
 
   return (
     <Box p={8} maxW="600px" mx="auto">
       <Flex justify="space-between" align="center" mb={6}>
         <Heading size="lg">Konumlar</Heading>
-        <Link href="/rota" passHref legacyBehavior>
+        <Link href="/route" passHref legacyBehavior>
           <Button colorScheme="teal">Rota Göster</Button>
         </Link>
       </Flex>
