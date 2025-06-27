@@ -24,7 +24,7 @@ function LocationMarker({ position, setPosition }: any) {
   return position === null ? null : <Marker position={position} />;
 }
 
-export default function KonumEkle() {
+export default function AddLocation() {
   const [position, setPosition] = React.useState<[number, number] | null>(null);
   const [name, setName] = React.useState("");
   const [markerColor, setMarkerColor] = React.useState("#3182ce");
@@ -74,6 +74,7 @@ export default function KonumEkle() {
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
+              maxLength={50}
               placeholder="Örn: Ev, Ofis..."
             />
           </FormControl>
