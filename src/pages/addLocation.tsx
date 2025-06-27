@@ -29,6 +29,7 @@ export default function AddLocation() {
   const [name, setName] = React.useState("");
   const [markerColor, setMarkerColor] = React.useState("#3182ce");
   const addLocation = useLocationStore((state) => state.addLocation);
+  const locations = useLocationStore((state) => state.locations);
   const toast = useToast();
   const router = useRouter();
 
@@ -65,6 +66,9 @@ export default function AddLocation() {
             style={{ height: "100%", width: "100%" }}
           >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+            {locations.map((loc) => (
+              <Marker key={loc.id} position={[loc.latitude, loc.longitude]} />
+            ))}
             <LocationMarker position={position} setPosition={setPosition} />
           </MapContainer>
         </Box>
