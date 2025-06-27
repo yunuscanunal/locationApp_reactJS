@@ -91,8 +91,17 @@ export default function AddLocation() {
               p={0}
             />
           </FormControl>
-          <Button colorScheme="blue" type="submit" width="100%">
+          <Button colorScheme="blue" type="submit" mb={4} width="100%">
             Kaydet
+          </Button>
+          <Button
+            colorScheme="red"
+            type="reset"
+            mb={4}
+            width="100%"
+            onClick={() => router.push("/")}
+          >
+            Geri
           </Button>
         </Box>
       </Flex>
