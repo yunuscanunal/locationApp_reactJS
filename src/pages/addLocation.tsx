@@ -1,0 +1,97 @@
+import * as React from "react";
+import {
+  Box,
+  Button,
+  Flex,
+  FormControl,
+  FormLabel,
+  Input,
+  Heading,
+  useToast,
+} from "@chakra-ui/react";
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import { useLocationStore } from "../store/locationStore";
+import { v4 as uuidv4 } from "uuid";
+import { useRouter } from "next/router";
+
+function LocationMarker({ position, setPosition }: any) {
+  useMapEvents({
+    click(e) {
+      setPosition([e.latlng.lat, e.latlng.lng]);
+    },
+  });
+  return position === null ? null : <Marker position={position} />;
+}
+
+export default function KonumEkle() {
+  const [position, setPosition] = React.useState<[number, number] | null>(null);
+  const [name, setName] = React.useState("");
+  const [markerColor, setMarkerColor] = React.useState("#3182ce");
+  const addLocation = useLocationStore((state) => state.addLocation);
+  const toast = useToast();
+  const router = useRouter();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!position || !name) {
+      toast({
+        title: "Tüm alanları doldurun ve haritadan konum seçin!",
+        status: "warning",
+      });
+      return;
+    }
+    addLocation({
+      id: uuidv4(),
+      name,
+      latitude: position[0],
+      longitude: position[1],
+      markerColor,
+    });
+    toast({ title: "Konum eklendi!", status: "success" });
+    router.push("/");
+  };
+
+  return (
+    <Box p={8} maxW="900px" mx="auto">
+      <Heading size="md" mb={6}>
+        Konum Ekle
+      </Heading>
+      <Flex gap={8} direction={{ base: "column", md: "row" }}>
+        <Box flex={1} h="400px">
+          <MapContainer
+            center={[39.92, 32.85]}
+            zoom={6}
+            style={{ height: "100%", width: "100%" }}
+          >
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+            <LocationMarker position={position} setPosition={setPosition} />
+          </MapContainer>
+        </Box>
+        <Box flex={1} as="form" onSubmit={handleSubmit}>
+          <FormControl mb={4} isRequired>
+            <FormLabel>Konum Adı</FormLabel>
+            <Input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Örn: Ev, Ofis..."
+            />
+          </FormControl>
+          <FormControl mb={4} isRequired>
+            <FormLabel>Marker Rengi</FormLabel>
+            <Input
+              type="color"
+              value={markerColor}
+              onChange={(e) => setMarkerColor(e.target.value)}
+              w="60px"
+              p={0}
+            />
+          </FormControl>
+          <Button colorScheme="blue" type="submit" width="100%">
+            Kaydet
+          </Button>
+        </Box>
+      </Flex>
+    </Box>
+  );
+}
