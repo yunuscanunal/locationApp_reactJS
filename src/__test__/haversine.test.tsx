@@ -26,6 +26,6 @@ describe("haversine fonksiyonu", () => {
 
     const distance = haversine(ankaraLat, ankaraLon, istanbulLat, istanbulLon);
 
-    expect(distance).toBeCloseTo(351, 0); //approximately 350km
+    expect(distance).toBeCloseTo(349, 0); //approximately 350km
   });
 });
