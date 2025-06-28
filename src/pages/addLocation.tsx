@@ -59,6 +59,7 @@ export default function AddLocation() {
             position={position}
             setPosition={setPosition}
             locations={locations}
+            selectedColor={markerColor}
           />
         </Box>
         <Box as="form" onSubmit={handleSubmit}>
