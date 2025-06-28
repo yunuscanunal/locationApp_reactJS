@@ -83,13 +83,16 @@ export default function EditLocation() {
         <LocationMap
           position={markerPos}
           setPosition={setMarkerPos}
+          selectedColor={markerColor}
           locations={
             markerPos
               ? [
                   {
                     id: location.id,
+                    name: name,
                     latitude: markerPos[0],
                     longitude: markerPos[1],
+                    markerColor: markerColor,
                   },
                 ]
               : []
