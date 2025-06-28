@@ -46,7 +46,7 @@ export default function Route() {
   React.useEffect(() => {
     const defaultPosition: [number, number] = [39.92077, 32.85411];
 
-    if (typeof window !== "undefined" && !navigator.geolocation) {
+    if (typeof window !== "undefined" && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           setUserPos([pos.coords.latitude, pos.coords.longitude]);
