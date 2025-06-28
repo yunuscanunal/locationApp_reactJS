@@ -1,0 +1,40 @@
+name: Konum Uygulaması CI
+
+# Bu iş akışının ne zaman tetikleneceğini belirtir
+on:
+  # main veya master branch'ine push yapıldığında
+  push:
+    branches: [main, master]
+  # main veya master branch'ine pull request açıldığında/güncellendiğinde
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  # build-and-test adında bir iş tanımlıyoruz
+  build-and-test:
+    # Bu işin çalışacağı sanal makine tipi
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Adım: Proje kodunu sanal makineye indir (checkout)
+      - name: Kodu Checkout Yap
+        uses: actions/checkout@v4
+
+      # 2. Adım: Node.js ortamını kur (v18 kullanıyoruz)
+      - name: Node.js Ortamını Kur
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      # 3. Adım: Proje bağımlılıklarını yükle
+      - name: Bağımlılıkları Yükle
+        run: npm install
+
+      # 4. Adım: Kod stilini ve olası hataları kontrol et
+      - name: Lint Kontrolünü Çalıştır
+        run: npm run lint
+
+      # 5. Adım: Tüm testleri çalıştır
+      - name: Testleri Çalıştır
+        run: npm run test:ci
