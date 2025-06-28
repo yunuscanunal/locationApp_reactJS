@@ -9,6 +9,7 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { useLocationStore } from "../store/locationStore";
+import dynamic from "next/dynamic";
 
 function haversine(lat1: number, lon1: number, lat2: number, lon2: number) {
   const R = 6371; // km
@@ -31,6 +32,10 @@ function sortLocationsByDistance(user: [number, number], locations: any[]) {
       haversine(user[0], user[1], b.latitude, b.longitude)
   );
 }
+const MapWithNoSSR = dynamic(() => import("../components/routeMap"), {
+  ssr: false,
+  loading: () => <Spinner size="xl" />,
+});
 
 export default function Route() {
   const locations = useLocationStore((state) => state.locations);
@@ -39,21 +44,25 @@ export default function Route() {
   const [error, setError] = React.useState("");
 
   React.useEffect(() => {
-    if (!navigator.geolocation) {
-      setError("Tarayıcı konum servisini desteklemiyor.");
+    const defaultPosition: [number, number] = [39.92077, 32.85411];
+
+    if (typeof window !== "undefined" && !navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setUserPos([pos.coords.latitude, pos.coords.longitude]);
+          setLoading(false);
+        },
+        () => {
+          setError("Konum alınamadı. Lütfen tarayıcı ayarlarından izin verin.");
+          setUserPos(defaultPosition);
+          setLoading(false);
+        }
+      );
+    } else {
+      setError("Tarayıcınız konum servisini desteklemiyor.");
+      setUserPos(defaultPosition);
       setLoading(false);
-      return;
     }
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setUserPos([pos.coords.latitude, pos.coords.longitude]);
-        setLoading(false);
-      },
-      () => {
-        setError("Konum alınamadı. Lütfen izin verin.");
-        setLoading(false);
-      }
-    );
   }, []);
 
   let routePoints: [number, number][] = [];
@@ -71,29 +80,23 @@ export default function Route() {
         <Heading size="md">Rota Çizimi</Heading>
         <Button onClick={() => history.back()}>Geri</Button>
       </Flex>
+
+      {error && (
+        <Text color="orange.500" mb={4}>
+          {error}
+        </Text>
+      )}
+
       {loading ? (
-        <Spinner />
-      ) : error ? (
-        <Text color="red.500">{error}</Text>
-      ) : !userPos ? (
-        <Text color="gray.500">Kullanıcı konumu alınamadı.</Text>
-      ) : (
+        <Flex justify="center" align="center" h="500px">
+          <Spinner />
+        </Flex>
+      ) : userPos ? (
         <Box h="500px">
-          <MapContainer
-            center={userPos}
-            zoom={8}
-            style={{ height: "100%", width: "100%" }}
-          >
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            <Marker position={userPos} />
-            {locations.map((loc) => (
-              <Marker key={loc.id} position={[loc.latitude, loc.longitude]} />
-            ))}
-            {routePoints.length > 1 && (
-              <Polyline positions={routePoints} color="blue" />
-            )}
-          </MapContainer>
+          <MapWithNoSSR userPos={userPos} locations={locations} />
         </Box>
+      ) : (
+        <Text>Konum bilgisi bekleniyor...</Text>
       )}
     </Box>
   );

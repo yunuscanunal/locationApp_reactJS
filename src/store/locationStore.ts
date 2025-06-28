@@ -9,13 +9,15 @@ interface LocationStore {
   setLocations: (locations: LocationData[]) => void;
   rehydrate: () => void;
 }
-
+const isBrowser = typeof window !== "undefined";
 export const useLocationStore = create<LocationStore>((set) => ({
   locations: [],
   addLocation: (location) =>
     set((state) => {
       const updated = [...state.locations, location];
-      localStorage.setItem("locations", JSON.stringify(updated));
+      if (isBrowser) {
+        localStorage.setItem("locations", JSON.stringify(updated));
+      }
       return { locations: updated };
     }),
   updateLocation: (location) =>
@@ -23,21 +25,28 @@ export const useLocationStore = create<LocationStore>((set) => ({
       const updated = state.locations.map((loc) =>
         loc.id === location.id ? location : loc
       );
-      localStorage.setItem("locations", JSON.stringify(updated));
+      if (isBrowser) {
+        localStorage.setItem("locations", JSON.stringify(updated));
+      }
       return { locations: updated };
     }),
   deleteLocation: (id) =>
     set((state) => {
       const updated = state.locations.filter((loc) => loc.id !== id);
-      localStorage.setItem("locations", JSON.stringify(updated));
+      if (isBrowser) {
+        localStorage.setItem("locations", JSON.stringify(updated));
+      }
       return { locations: updated };
     }),
   setLocations: (locations) =>
     set(() => {
-      localStorage.setItem("locations", JSON.stringify(locations));
+      if (isBrowser) {
+        localStorage.setItem("locations", JSON.stringify(locations));
+      }
       return { locations };
     }),
   rehydrate: () => {
+    if (!isBrowser) return;
     const data = localStorage.getItem("locations");
     if (data) {
       set({ locations: JSON.parse(data) });

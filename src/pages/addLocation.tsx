@@ -19,15 +19,6 @@ const LocationMap = dynamic(() => import("../components/locationMap"), {
   ssr: false,
 });
 
-function LocationMarker({ position, setPosition }: any) {
-  useMapEvents({
-    click(e) {
-      setPosition([e.latlng.lat, e.latlng.lng]);
-    },
-  });
-  return position === null ? null : <Marker position={position} />;
-}
-
 export default function AddLocation() {
   const [position, setPosition] = React.useState<[number, number] | null>(null);
   const [name, setName] = React.useState("");
