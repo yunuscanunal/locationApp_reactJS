@@ -1,8 +1,37 @@
-// src/components/RouteMap.tsx
-
 import React from "react";
 import { MapContainer, TileLayer, Marker, Polyline } from "react-leaflet";
-import { LocationData } from "../types/location"; // LocationData tipini import edin
+import { LocationData } from "../types/location";
+import L from "leaflet";
+
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl:
+    "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
+  iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
+});
+
+const createColorIcon = (color: string) => {
+  const markerHtmlStyles = `
+    background-color: ${color};
+    width: 2rem;
+    height: 2rem;
+    display: block;
+    left: -1rem;
+    top: -1rem;
+    position: relative;
+    border-radius: 2rem 2rem 0;
+    transform: rotate(45deg);
+    border: 1px solid #FFFFFF;
+    box-shadow: 0 0 2px #000;`;
+
+  return L.divIcon({
+    className: "my-custom-pin",
+    iconAnchor: [0, 24],
+    popupAnchor: [0, -36],
+    html: `<span style="${markerHtmlStyles}" />`,
+  });
+};
 
 // Haversine ve sıralama fonksiyonlarını buraya taşıyoruz
 function haversine(lat1: number, lon1: number, lat2: number, lon2: number) {
@@ -54,7 +83,11 @@ const RouteMap: React.FC<RouteMapProps> = ({ userPos, locations }) => {
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       <Marker position={userPos} />
       {locations.map((loc) => (
-        <Marker key={loc.id} position={[loc.latitude, loc.longitude]} />
+        <Marker
+          key={loc.id}
+          position={[loc.latitude, loc.longitude]}
+          icon={createColorIcon(loc.markerColor)}
+        />
       ))}
       {routePoints.length > 1 && (
         <Polyline positions={routePoints} color="blue" />
