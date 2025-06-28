@@ -37,6 +37,21 @@ export default function AddLocation() {
       });
       return;
     }
+    const isDuplicate = locations.some(
+      (location) =>
+        location.name.toLowerCase() === name.toLowerCase() &&
+        location.markerColor === markerColor
+    );
+
+    if (isDuplicate) {
+      toast({
+        title: "Mükerrer Konum!",
+        description: "Bu isim ve renkte bir konum zaten mevcut.",
+        status: "error",
+      });
+      return; // Fonksiyonu burada sonlandır
+    }
+
     addLocation({
       id: uuidv4(),
       name,
