@@ -2,7 +2,6 @@ import * as React from "react";
 import {
   Box,
   Button,
-  Flex,
   FormControl,
   FormLabel,
   Input,
@@ -63,15 +62,15 @@ export default function AddLocation() {
       <Heading size="md" mb={6}>
         Konum Ekle
       </Heading>
-      <Flex gap={8} direction={{ base: "column", md: "row" }}>
-        <Box flex={1} h="400px">
+      <Box>
+        <Box h="400px" mb={8} borderRadius="md" overflow="hidden">
           <LocationMap
             position={position}
             setPosition={setPosition}
             locations={locations}
           />
         </Box>
-        <Box flex={1} as="form" onSubmit={handleSubmit}>
+        <Box as="form" onSubmit={handleSubmit}>
           <FormControl mb={4} isRequired>
             <FormLabel>Konum Adı</FormLabel>
             <Input
@@ -104,7 +103,7 @@ export default function AddLocation() {
             Geri
           </Button>
         </Box>
-      </Flex>
+      </Box>
     </Box>
   );
 }
