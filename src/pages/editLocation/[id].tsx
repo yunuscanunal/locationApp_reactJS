@@ -75,7 +75,7 @@ export default function EditLocation() {
   };
 
   return (
-    <Box p={8} maxW="600px" mx="auto">
+    <Box p={{ base: 4, md: 8 }} maxW="600px" mx="auto">
       <Heading size="md" mb={6}>
         Konumu Düzenle
       </Heading>

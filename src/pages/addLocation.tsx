@@ -59,7 +59,7 @@ export default function AddLocation() {
   };
 
   return (
-    <Box p={8} maxW="900px" mx="auto">
+    <Box p={{ base: 4, md: 8 }} maxW="900px" mx="auto">
       <Heading size="md" mb={6}>
         Konum Ekle
       </Heading>

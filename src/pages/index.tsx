@@ -24,7 +24,7 @@ export default function Home() {
   }, [rehydrate]);
 
   return (
-    <Box p={8} maxW="600px" mx="auto">
+    <Box p={{ base: 4, md: 8 }} maxW="600px" mx="auto">
       <Flex justify="space-between" align="center" mb={6}>
         <Heading size="lg">Konumlar</Heading>
         <Link href="/route" passHref legacyBehavior>
@@ -54,7 +54,7 @@ export default function Home() {
                   </Tooltip>
                 </Flex>
                 <Link
-                  href={`/konum-duzenle/${location.id}`}
+                  href={`/editLocation/${location.id}`}
                   passHref
                   legacyBehavior
                 >
